@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="jquery-1.12.0.js"></script>
+	</head>
+	<body>
+		<script>
+			/**
+			 * 需求：在页面中添加一个ajax请求的loading， 我们应该监听哪些事件？
+			 * */
+			
+			// 监听全局ajax事件
+			$(document).on('ajaxStart', function() {
+				console.log('ajaxStart有一个请求发出了！');
+			});
+			$(document).on('ajaxSend', function() {
+				console.log('ajaxSend有一个请求发出了！');
+			});
+			$(document).on('ajaxSuccess', function() {
+				console.log('有一个请求ajaxSuccess！');
+			});
+			$(document).on('ajaxError', function() {
+				console.log('有一个请求ajaxError！');
+			});
+			$(document).on('ajaxStop', function() {
+				console.log('有一个请求ajaxStop！');
+			});
+			$(document).on('ajaxComplete', function() {
+				console.log('有一个请求ajaxComplete！');
+			});
+			
+			$.get('./test/test.json');
+			$.get('./test/su.json');
+			
+			// 上面的ajax请求周期结束后，新的请求周期还会触发一次ajaxStart事件
+			/*setTimeout(function() {
+				$.get('./test/test.json');
+				$.get('./test/su.json');
+			}, 1000);*/
+		</script>
+	</body>
+</html>

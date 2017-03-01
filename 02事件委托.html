@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<article>
+			<h1>
+				<p>我</p>
+			</h1>
+			<ul>
+				<li>xxx</li>
+				<li>dddd</li>
+				<li>qqqq</li>
+				<li>tttt</li>
+				<li>
+					<a>我是最里面的东西1111111</a>
+					<a>我是最里面的东西22222222</a>
+				</li>
+			</ul>
+		</article>
+		<script>
+			/**
+			 * 事件委托可以认为是事件绑定的一种编程技巧，
+			 * 浏览器原生的js语法上是没有提供该功能的。
+			 * 
+			 * 事件委托的本质是：本来要给一个子元素绑定事件，
+			 * 结果绑定在了祖级元素上，然后当祖级触发该事件时，
+			 * 增加一个过滤条件，判断祖级在接收到该事件的冒泡阶段中，
+			 * 有没有经过指定子元素，经过了再执行特定逻辑的代码。
+			 * 
+			 * 这个特定逻辑的代码，就可以认为是事件委托执行的。
+			 * */
+			
+			// 假设发了一个ajax请求，根据数据动态创建a元素，添加到指定容器中
+			setTimeout(function() {
+				var a = document.createElement('a');
+				a.innerHTML = '我是动态创建的aaaaaaa';			
+				document.querySelectorAll('li')[4].appendChild(a);
+			}, 500);
+			
+			// 调用自己实现的委托方法
+			delegate('li', function() {
+				console.log(this.innerHTML);
+			});
+			
+			
+			// 模拟实现一个事件委托的绑定方法
+			function delegate(selector, fn) {
+				// 给所有的a元素绑定事件，但是后续动态创建的a无法绑定，因为绑定的时候他们还不存在
+				document.onclick = function(e) {
+					/*
+					 * 在这里判断，点击事件触发的冒泡过程中，是否含有指定a元素，
+					 * 有再执行逻辑代码，没有就忽略。
+					 * */
+					
+					// 获取事件源
+					//console.log(e.target);
+					
+					// 然后依次获取事件源的父元素，这些父元素就是冒泡阶段经过的元素，
+					// 判断这些元素有没有我预期的那个元素，有则执行相关的逻辑代码，没有则忽略。
+					
+					// 判断冒泡经过的元素，是否符合选择器的规则，符合就执行事件委托的回调函数，并改变其this
+					if(e.target.nodeName === selector.toUpperCase()) {
+						fn.call(e.target);
+					}else if(e.target.parentNode.nodeName === selector.toUpperCase()) {
+						fn.call(e.target.parentNode);
+					}
+				};	
+			}
+		</script>
+	</body>
+</html>
